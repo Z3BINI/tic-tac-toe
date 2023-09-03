@@ -70,6 +70,7 @@ const gameBoard = function(player1, player2){
             if (!(this.checkOccupied(square.element.textContent))) {
                 displayController.render(square.element, this.playerPlaying().getMark());
                 square.currentMark = this.playerPlaying().getMark();
+                console.log(this.isGameOver.gameTied());
                 this.playersSwapTurn();
             }
 
@@ -84,9 +85,15 @@ const gameBoard = function(player1, player2){
             player2.swapTurn();
         },
 
-        isGameOver: function() {
+        isGameOver: (function() {
             
-        },
+            const gameTied = () => {
+                return gameBoardSquares.every(gameBoardSquare => gameBoardSquare.currentMark);
+            }
+
+            return {gameTied};
+
+        })(),
 
         checkOccupied: function(squareHasContent) {
             return (squareHasContent);
