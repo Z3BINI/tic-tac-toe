@@ -8,18 +8,16 @@ const init = (function(){
     formDialog.showModal();
 
     //Listen for start game
-    form.addEventListener('submit', () => validateInfo());
+    form.addEventListener('submit', () => createPlayers());
 
-    const validateInfo = function() {
-        let player1Name = document.querySelector('input#player1').value;
-        let player1Mark = 'X';
-        let player2Name = document.querySelector('input#player2').value;
-        let player2Mark = 'O';
+    const createPlayers = function() {
+        const player1Name = document.querySelector('input#player1').value;
+        const player2Name = document.querySelector('input#player2').value;
 
-        const player1 = Player(player1Name, player1Mark);
-        const player2 = Player(player2Name, player2Mark);
+        const player1 = Player(player1Name, 'X');
+        const player2 = Player(player2Name, 'O');
         
-        gameBoard(player1, player2);
+        gameBoard(player1, player2); //Start game
     }
 
    
