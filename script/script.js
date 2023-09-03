@@ -68,12 +68,15 @@ const gameBoard = function(player1, player2){
         click: function(square) {
 
             if (!(this.checkOccupied(square.element.textContent))) {
-
-                square.element.textContent = this.playerPlaying().getMark();
+                this.render(square.element, this.playerPlaying().getMark());
                 square.currentMark = this.playerPlaying().getMark();
                 this.playersSwapTurn();
             }
 
+        },
+
+        render: function(elementToBeChanged, valueToBeRendered) {
+            elementToBeChanged.textContent = valueToBeRendered;
         },
 
         playerPlaying: function() {
@@ -96,3 +99,4 @@ const gameBoard = function(player1, player2){
     }
 
 };
+
