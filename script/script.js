@@ -60,17 +60,20 @@ const gameBoard = function(player1, player2){
                              });
 
     
-    //Add event listeners
-    gameBoardSquares.forEach(square => square.element.addEventListener('click', (event) => squareController.click(event, square)));
+    //Square click listening
+    gameBoardSquares.forEach(square => square.element.addEventListener('click', () => squareController.click(square)));
 
     //Gameboard functions
     const squareController = {
 
-        click: function(event, square) {
-            console.log(event);
-            console.log(square);
+        click: function(square) {
+            return (this.checkOccupied(square.element.textContent)) ? console.log('has content') : console.log('does not have content');
+        },
+
+        checkOccupied: function(squareHasContent) {
+            return (squareHasContent);
         }
-        
+
     }
 
 };
