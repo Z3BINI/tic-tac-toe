@@ -53,7 +53,8 @@ const gameBoard = function(player1, player2){
                              .map(gameSquareElement => {
                                 return { 
                                     element: gameSquareElement,
-                                    position: gameSquareElement.dataset.pos,
+                                    verticalAxis: gameSquareElement.dataset.verticalAxis,
+                                    horizontalAxis: gameSquareElement.dataset.horizontalAxis,
                                     currentMark: gameSquareElement.textContent
                                 };
                              });
@@ -71,6 +72,7 @@ const gameBoard = function(player1, player2){
                 displayController.render(square.element, this.playerPlaying().getMark());
                 square.currentMark = this.playerPlaying().getMark();
                 console.log(this.isGameOver.gameTied());
+                console.log(square);
                 this.playersSwapTurn();
             }
 
