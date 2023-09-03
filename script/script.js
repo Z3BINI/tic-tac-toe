@@ -49,7 +49,7 @@ const gameBoard = function(player1, player2){
     //Cache DOM
     const gameSquareElements = document.querySelectorAll('.game-square');
 
-    //Add all elements & necessary element info in gameBoardSquares Array
+    //Add all live-elements & necessary element info
     const gameBoardSquares = Array.from(gameSquareElements)
                              .map(gameSquareElement => {
                                 return { 
@@ -61,12 +61,16 @@ const gameBoard = function(player1, player2){
 
     
     //Add event listeners
-    gameBoardSquares.forEach(square => square.element.addEventListener('click', (event) => squareController(event, square)));
+    gameBoardSquares.forEach(square => square.element.addEventListener('click', (event) => squareController.click(event, square)));
 
     //Gameboard functions
-    const squareController = (event, square) => {
-        console.log(event.target);
-        console.log(square);
+    const squareController = {
+
+        click: function(event, square) {
+            console.log(event);
+            console.log(square);
+        }
+        
     }
 
 };
