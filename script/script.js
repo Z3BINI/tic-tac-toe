@@ -16,8 +16,8 @@ const init = (function(){
         let player2Name = document.querySelector('input#player2').value;
         let player2Mark = 'O';
 
-        const player1 = Player(player1Name, player1Mark, true);
-        const player2 = Player(player2Name, player2Mark, false);
+        const player1 = Player(player1Name, player1Mark);
+        const player2 = Player(player2Name, player2Mark);
         
         gameBoard(player1, player2);
     }
@@ -26,7 +26,11 @@ const init = (function(){
 
 })();
 
-const Player = function(playerName, playerMark, isTurn) {
+const Player = function(playerName, playerMark) {
+
+    let isTurn = false;
+
+    if (playerMark === 'X') isTurn = true;
     
     const swapTurn = function() {
         return (isTurn) ? isTurn = false : isTurn = true;
@@ -38,7 +42,7 @@ const Player = function(playerName, playerMark, isTurn) {
         isTurn,
         swapTurn
     }
-}
+};
 
 const gameBoard = function(player1, player2){
 
