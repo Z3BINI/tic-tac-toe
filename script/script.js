@@ -45,13 +45,6 @@ const Player = function(playerName, playerMark) {
 
 const gameBoard = function(player1, player2){
 
-    console.log(player1.getTurn(), player2.getTurn());
-
-    player1.swapTurn();
-    player2.swapTurn();
-
-    console.log(player1.getTurn(), player2.getTurn());
-
     //Cache DOM
     const gameSquareElements = document.querySelectorAll('.game-square');
 
@@ -74,7 +67,22 @@ const gameBoard = function(player1, player2){
 
         click: function(square) {
 
-            //return (this.checkOccupied(square.element.textContent)) ? console.log('has content') : console.log('does not have content');
+            if (!(this.checkOccupied(square.element.textContent))) {
+
+                square.element.textContent = this.playerPlaying().getMark();
+                square.currentMark = this.playerPlaying().getMark();
+                this.playersSwapTurn();
+            }
+
+        },
+
+        playerPlaying: function() {
+            return (player1.getTurn()) ? player1 : player2;
+        },
+
+        playersSwapTurn: function(){
+            player1.swapTurn();
+            player2.swapTurn();
         },
 
         isGameOver: function() {
