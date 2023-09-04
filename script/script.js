@@ -53,8 +53,6 @@ const gameBoard = function(player1, player2){
                              .map(gameSquareElement => {
                                 return { 
                                     element: gameSquareElement,
-                                    verticalAxis: gameSquareElement.dataset.verticalAxis,
-                                    horizontalAxis: gameSquareElement.dataset.horizontalAxis,
                                     currentMark: gameSquareElement.textContent
                                 };
                              });
