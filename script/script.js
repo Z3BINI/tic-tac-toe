@@ -1,4 +1,7 @@
 const init = (function(){
+    //Constant marks
+    const X = 'X';
+    const O = 'O';
 
     //Cache form DOM
     const formDialog = document.querySelector('dialog');
@@ -7,24 +10,31 @@ const init = (function(){
     //Show the dialog by default
     formDialog.show();
 
+    //players holder
+    const players = {};
+
     //Listen for start game
     form.addEventListener('submit', () => createPlayers());
 
-    const createPlayers = function() {
+    const createPlayers = () => {
+
+        //Set player names from labels
         const player1Name = document.querySelector('input#player1').value;
         const player2Name = document.querySelector('input#player2').value;
 
-        const player1 = Player(player1Name, 'X');
-        const player2 = Player(player2Name, 'O');
+        //Create players
+        players.player1 = Player(player1Name, X);
+        players.player2 = Player(player2Name, O);
+
+        displayController.renderPlaying(players.player1);
         
-        gameBoard(player1, player2); //Start game
     }
 
-   
+    return {players}
 
 })();
 
-const Player = function(playerName, playerMark) {
+const Player = (playerName, playerMark) => {
 
     let isTurn = (playerMark === 'X');
 
@@ -43,92 +53,85 @@ const Player = function(playerName, playerMark) {
     };
 };
 
-const gameBoard = function(player1, player2){
+const gameBoard = (() => {   
 
     //Cache DOM
-    const gameSquareElements = document.querySelectorAll('.game-square');
-
-    //Add all live-elements & necessary element info
-    const gameBoardSquares = Array.from(gameSquareElements)
-                             .map(gameSquareElement => {
-                                return { 
-                                    element: gameSquareElement,
-                                    currentMark: gameSquareElement.textContent
-                                };
-                             });
-
+    const gameSquareElements = document.querySelectorAll('.game-square'); 
     
+    const resetBoard = () => {
+        //Reset DOM content from previous games
+        gameSquareElements.forEach(gameSquareElement => gameSquareElement.textContent = '');
+    }    
+
     //Square click listening
-    gameBoardSquares.forEach(square => square.element.addEventListener('click', () => squareController.click(square)));
+    gameSquareElements.forEach(square => square.addEventListener('click', (event) => squareController.click(event)));    
 
     //Gameboard functions
     const squareController = {
 
-        click: function(square) {
+        click: function(event) { 
 
-            if (!(this.checkOccupied(square.element.textContent))) {
+            if (!(this.checkOccupied(event.target.textContent))) {
 
-                displayController.renderPlay(square.element, this.playerPlaying().getMark());
-                square.currentMark = this.playerPlaying().getMark();
+                displayController.renderPlaying( (this.playerPlaying()===init.players.player1) ? init.players.player2 : init.players.player1);
+                displayController.renderPlay(event.target, this.playerPlaying().getMark());
+                this.playersSwapTurn();
 
                 if (this.isGameOver.someoneWon()){
-                    return displayController.renderGameOver(this.isGameOver.someoneWon());
+                    displayController.gameOver(this.isGameOver.someoneWon());
+                    this.resetGame();
                 } 
 
                 if (this.isGameOver.gameTied()) {
-                    return displayController.renderGameOver();
+                    displayController.gameOver();
+                    this.resetGame();
                 }
 
-                this.playersSwapTurn();
             }
 
         },
 
         playerPlaying: function() {
-            return (player1.getTurn()) ? player1 : player2;
+            return (init.players.player1.getTurn()) ? init.players.player1 : init.players.player2;
         },
 
         playersSwapTurn: function(){
-            player1.swapTurn();
-            player2.swapTurn();
+            init.players.player1.swapTurn();
+            init.players.player2.swapTurn();
         },
 
         isGameOver: (function() { 
             
             const gameTied = () => {
-                return gameBoardSquares.every(gameBoardSquare => gameBoardSquare.currentMark);
+                return (Array.from(gameSquareElements)).every(gameSquareElement => gameSquareElement.textContent);
             }
 
-            const someoneWon = () => {
+            const someoneWon = () => { 
            
-                const winningPositions = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8],[0, 4, 8]];   
+                const winningPositions = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8],[0, 4, 8], [2, 4, 6]];   
                 let winner = null;             
 
-                const getPlayerIndexes = (playsArray, player) => {
+                const getPlayerIndexes = (player) => {
 
                     const indexes = [];
-
-                    playsArray.forEach((play, index) => {
-                        if (play.currentMark === player.getMark()) indexes.push(index);
+                    //Store each players plays (indexes) in a seperate array to match against winning sequences
+                    Array.from(gameSquareElements).forEach((play, index) => {
+                        if (play.textContent === player.getMark()) indexes.push(index);
                     }); 
 
                     return indexes;
-                }
+                }                
 
-                const player1Plays = getPlayerIndexes(gameBoardSquares, player1);
-                const player2Plays = getPlayerIndexes(gameBoardSquares, player2);
+                player1Plays = getPlayerIndexes(init.players.player1);
+                player2Plays = getPlayerIndexes(init.players.player2);
 
-
-                
-                winningPositions.forEach(winningPosition => { 
-                    if (winningPosition.every(element => player1Plays.includes(element))) winner = player1;
-                    if (winningPosition.every(element => player2Plays.includes(element))) winner = player2;
+                winningPositions.forEach(winningPosition => { //Check if every element of each winning sequences is present in any of the players plays
+                    if (winningPosition.every(element => player1Plays.includes(element))) winner = init.players.player1;
+                    if (winningPosition.every(element => player2Plays.includes(element))) winner = init.players.player2;
                 });
 
-                
-                return (winner);
-
-            }
+                return winner;                
+            } 
 
             return {gameTied, someoneWon};
 
@@ -136,35 +139,53 @@ const gameBoard = function(player1, player2){
 
         checkOccupied: function(squareHasContent) {
             return (squareHasContent);
+        },
+
+        resetGame: function() {
+            gameBoard.resetBoard();
         }
 
     }
 
-};
+    return {resetBoard}
+
+})();
 
 const displayController = (function() {
+
+    const resetGameBtn = document.querySelector('.play-again');
+    const gameBoard = document.querySelector('.game-board');
+    const gameOverEl = document.querySelector('.game-over');
+    const resultEl = document.querySelector('.result');
+    const currentPlaying = document.querySelector('.playing');
+
+    resetGameBtn.addEventListener('click', () => resetGame());    
 
     const renderPlay = function(element, value) {
         element.textContent = value;
     }
 
-    const renderGameOver = function (playerWon) {
-
-        const gameOverEl = document.querySelector('.game-over');
-        const gameResult = document.querySelector('.result');
-        const gameBoardEl = document.querySelector('.game-board');        
-
-        gameResult.textContent = (playerWon) ? `${playerWon.getName()} won!` : 'A tie!';
-
-        gameOverEl.classList.toggle('hidden');
-        gameBoardEl.classList.toggle('hidden');
-
+    const renderPlaying = function(playerPlaying) {
+        currentPlaying.textContent = `Currently ${playerPlaying.getName()}'s turn.`;
     }
 
+    const gameOver = function(winner) {
+
+        gameBoard.classList.toggle('hidden');
+        gameOverEl.classList.toggle('hidden');
+
+        resultEl.textContent = (winner) ? `${winner.getName()} wins!` : 'It\'s a draw!';
+    }
+
+    const resetGame = function() {
+        gameBoard.classList.toggle('hidden');
+        gameOverEl.classList.toggle('hidden');
+    }
 
     return {
         renderPlay,
-        renderGameOver
+        gameOver,
+        renderPlaying
     };
 })();
 
