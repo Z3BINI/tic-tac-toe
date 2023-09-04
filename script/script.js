@@ -8,19 +8,19 @@ const init = (function(){
     const form = document.querySelector('form');
 
     //Show the dialog by default
-    formDialog.show();
+    formDialog.showModal();
 
     //players holder
     const players = {};
 
     //Listen for start game
-    form.addEventListener('submit', () => createPlayers());
+    formDialog.addEventListener('close', () => createPlayers());
 
     const createPlayers = () => {
 
         //Set player names from labels
-        const player1Name = document.querySelector('input#player1').value;
-        const player2Name = document.querySelector('input#player2').value;
+        const player1Name = (document.querySelector('input#player1').value) ? document.querySelector('input#player1').value : 'Player1';
+        const player2Name = (document.querySelector('input#player2').value) ? document.querySelector('input#player2').value : 'Player2';
 
         //Create players
         players.player1 = Player(player1Name, X);
