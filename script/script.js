@@ -71,8 +71,8 @@ const gameBoard = function(player1, player2){
             if (!(this.checkOccupied(square.element.textContent))) {
                 displayController.render(square.element, this.playerPlaying().getMark());
                 square.currentMark = this.playerPlaying().getMark();
-                console.log(this.isGameOver.gameTied());
-                console.log(square);
+                //console.log({ 'game tied': this.isGameOver.gameTied()});
+                this.isGameOver.someoneWon();
                 this.playersSwapTurn();
             }
 
@@ -87,13 +87,44 @@ const gameBoard = function(player1, player2){
             player2.swapTurn();
         },
 
-        isGameOver: (function() {
+        isGameOver: (function() { 
             
             const gameTied = () => {
                 return gameBoardSquares.every(gameBoardSquare => gameBoardSquare.currentMark);
             }
 
-            return {gameTied};
+            const someoneWon = () => {
+           
+                const winningPositions = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8],[0, 4, 8]];                
+
+                const getPlayerIndexes = (playsArray, player) => {
+
+                    const indexes = [];
+
+                    playsArray.forEach((play, index) => {
+                        if (play.currentMark === player.getMark()) indexes.push(index);
+                    }); 
+
+                    return indexes;
+                }
+
+                const player1Plays = getPlayerIndexes(gameBoardSquares, player1);
+                const player2Plays = getPlayerIndexes(gameBoardSquares, player2);
+
+                
+                winningPositions.forEach(winningPosition => { 
+                    if (winningPosition.every(element => player1Plays.includes(element))) console.log('player1 wins');
+                    if (winningPosition.every(element => player2Plays.includes(element))) console.log('player2 wins');
+                });
+
+                
+                
+
+                
+
+            }
+
+            return {gameTied, someoneWon};
 
         })(),
 
