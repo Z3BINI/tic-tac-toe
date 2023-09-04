@@ -5,7 +5,7 @@ const init = (function(){
     const form = document.querySelector('form');
 
     //Show the dialog by default
-    formDialog.showModal();
+    formDialog.show();
 
     //Listen for start game
     form.addEventListener('submit', () => createPlayers());
