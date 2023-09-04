@@ -9,27 +9,30 @@
 </head>
 <body>
     <div class="header">
-        
     </div>
+
     <div class="main">
+
         <dialog>
             <div class="wrapper">
                 <form action="" method="dialog">
                     <label for="player1">Player1's name:</label>
-                    <input type="text" id="player1" name="player1" required>
+                    <input type="text" id="player1" name="player1" placeholder="The X" required>
 
                     <label for="player2">Player2's name:</label>
-                    <input type="text" id="player2" name="player2" required>
+                    <input type="text" id="player2" name="player2" placeholder="The O" required>
 
                     <button id="start-game" type="submit">Start Game</button>
                 </form>
             </div>
         </dialog>
+
         <div class="game-over hidden">
             <h1>Game Over!</h1>
             <h3>Result: <p class="result"></p></h3>
             <button class="play-again">Rematch!</button>
         </div>
+
         <div class="game-board">
             <div class="game-square"></div>
             <div class="game-square"></div>
@@ -42,6 +45,7 @@
             <div class="game-square"></div>
         </div>
         <p class="playing"></p>
+        
     </div>
     <div class="footer">
 
