@@ -67,10 +67,18 @@ const gameBoard = function(player1, player2){
         click: function(square) {
 
             if (!(this.checkOccupied(square.element.textContent))) {
+
                 displayController.renderPlay(square.element, this.playerPlaying().getMark());
                 square.currentMark = this.playerPlaying().getMark();
-                if (this.isGameOver.someoneWon()) displayController.renderGameOver(this.isGameOver.someoneWon());
-                console.log({ 'game tied': this.isGameOver.gameTied()});
+
+                if (this.isGameOver.someoneWon()){
+                    return displayController.renderGameOver(this.isGameOver.someoneWon());
+                } 
+
+                if (this.isGameOver.gameTied()) {
+                    return displayController.renderGameOver();
+                }
+
                 this.playersSwapTurn();
             }
 
@@ -141,7 +149,16 @@ const displayController = (function() {
     }
 
     const renderGameOver = function (playerWon) {
-        console.log(playerWon.getName());
+
+        const gameOverEl = document.querySelector('.game-over');
+        const gameResult = document.querySelector('.result');
+        const gameBoardEl = document.querySelector('.game-board');        
+
+        gameResult.textContent = (playerWon) ? `${playerWon.getName()} won!` : 'A tie!';
+
+        gameOverEl.classList.toggle('hidden');
+        gameBoardEl.classList.toggle('hidden');
+
     }
 
 
