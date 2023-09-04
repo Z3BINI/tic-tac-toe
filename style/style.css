@@ -16,3 +16,12 @@
 .hidden {
     display: none;
 }
+
+dialog{
+    border-radius: 5px;
+    border: none;
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.7);
+}
